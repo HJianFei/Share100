@@ -7,6 +7,8 @@ package com.loosoo100.share100.constants;
  */
 
 public class Constants {
-    public static final String API_SERVER="";
+    //服务器地址
+    public static final String API_SERVER = "";
+
 
 }

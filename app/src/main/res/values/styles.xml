@@ -20,10 +20,10 @@
         <item name="colorControlActivated">#FFCC00</item>
     </style>
     <style name="CardView.Content" parent="android:Widget">
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingTop">24dp</item>
-        <item name="android:paddingBottom">24dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
         <item name="android:orientation">vertical</item>
     </style>
 
@@ -35,5 +35,14 @@
         <item name="tabPaddingEnd">12dp</item>
         <item name="tabBackground">@color/tab_bgcolor</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="transparentFrameWindowStyle" parent="android:style/Theme.Dialog">
+        <item name="android:windowBackground">@drawable/photo_choose_bg</item>
+    </style>
+
+    <style name="main_menu_animstyle">
+        <item name="android:windowEnterAnimation">@anim/photo_dialog_in_anim</item>
+        <item name="android:windowExitAnimation">@anim/photo_dialog_out_anim</item>
     </style>
 </resources>

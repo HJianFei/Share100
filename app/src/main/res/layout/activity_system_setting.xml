@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/card_margin"
         android:layout_marginRight="@dimen/card_margin"
-        android:layout_marginTop="@dimen/card_margin"
+        android:layout_marginTop="10dp"
         app:cardCornerRadius="10dp">
 
         <LinearLayout
@@ -120,14 +120,17 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/arrow_small"/>
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_login_out"
+                android:layout_width="270dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:text="退出登录"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                />
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
-    <Button
-        android:id="@+id/exit_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="退出登录"
-        android:textSize="24sp"/>
 </LinearLayout>
