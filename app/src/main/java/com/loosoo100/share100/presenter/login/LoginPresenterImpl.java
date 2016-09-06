@@ -39,7 +39,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginIndicator.OnLogi
 
 
     @Override
-    public void onFail() {
+    public void onError() {
         if (null != mLoginView) {
             mLoginView.failToLogin();
 //            mLoginView.hideProgress();

@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
-import android.transition.Explode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -97,19 +95,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     public void navicateToHome() {
 
         Intent i2 = new Intent(this, MainActivity.class);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            Explode explode = new Explode();
-            explode.setDuration(500);
-            getWindow().setExitTransition(explode);
-            getWindow().setEnterTransition(explode);
-            ActivityOptionsCompat oc2 = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
-            startActivity(i2, oc2.toBundle());
-            this.finish();
-        } else {
-            startActivity(i2);
-            this.finish();
-        }
-
+        startActivity(i2);
+        this.finish();
     }
 
     @Override

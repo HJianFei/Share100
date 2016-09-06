@@ -9,7 +9,7 @@ package com.loosoo100.share100.model.login;
 public interface LoginIndicator {
 
     interface OnLoginFinishListener {
-        void onFail();
+        void onError();
 
         void onSuccess();
     }

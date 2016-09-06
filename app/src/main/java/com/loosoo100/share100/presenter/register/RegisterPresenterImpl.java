@@ -37,7 +37,7 @@ public class RegisterPresenterImpl implements RegisterPresenter, RegisterIndicat
     }
 
     @Override
-    public void onFail() {
+    public void onError() {
         if (null != mRegisterView) {
             mRegisterView.hideProgress();
             mRegisterView.failToRegister();

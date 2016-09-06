@@ -10,7 +10,7 @@ public interface RegisterIndicator {
     interface OnRegisterFinishListener {
 
         //失败
-        void onFail();
+        void onError();
 
         //成功
         void onSuccess();

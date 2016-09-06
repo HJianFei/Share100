@@ -7,7 +7,27 @@
               tools:context="com.loosoo100.share100.view.order.OrderFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <include layout="@layout/order_toolbar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.sevenheaven.segmentcontrol.SegmentControl
+            android:id="@+id/segment_control"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            app:block_direction="horizon"
+            app:boundWidth="10dp"
+            app:cornerRadius="10dp"
+            app:horizonGap="10dp"
+            app:normalColor="@color/text_toolbar"
+            app:selectedColor="@color/blue"
+            app:separatorWidth="10dp"
+            app:texts="派送|到店"/>
+    </LinearLayout>
 
 
 </LinearLayout>
