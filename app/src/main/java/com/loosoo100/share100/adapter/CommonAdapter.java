@@ -10,10 +10,10 @@ import java.util.List;
 /**
  * 创建时间： 2016/9/5.
  * 作者：HJianFei
- * 功能描述：
+ * 功能描述：RecyclerView 万能适配器
  */
 
-public abstract class CommonAdapter<T> extends RecyclerView.Adapter<ViewHolder>{
+public abstract class CommonAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     private Context mContext;
     private int mLayoutId;
     private List<T> mDatas;
@@ -32,26 +32,26 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<ViewHolder>{
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder holder = ViewHolder.NewInstance(mContext, null, parent, mLayoutId);
-        setListener(parent,holder,viewType);
+        setListener(parent, holder, viewType);
         return holder;
     }
 
-    protected  void setListener(final ViewGroup parent, final ViewHolder holder, int viewType){
+    protected void setListener(final ViewGroup parent, final ViewHolder holder, int viewType) {
         holder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mOnItemClickListener!=null){
+                if (mOnItemClickListener != null) {
                     int position = getPosition(holder);
-                    mOnItemClickListener.onItemClick(parent,v,mDatas.get(position),position);
+                    mOnItemClickListener.onItemClick(parent, v, mDatas.get(position), position);
                 }
             }
         });
         holder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(mOnItemClickListener!=null){
+                if (mOnItemClickListener != null) {
                     int position = getPosition(holder);
-                    return mOnItemClickListener.onItemLongClick(parent,v,mDatas.get(position),position);
+                    return mOnItemClickListener.onItemLongClick(parent, v, mDatas.get(position), position);
                 }
                 return false;
             }
@@ -65,7 +65,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<ViewHolder>{
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.setPosition(position);
-        setData(holder,mDatas.get(position));
+        setData(holder, mDatas.get(position));
     }
 
     @Override

@@ -15,18 +15,21 @@
         android:orientation="horizontal">
 
         <com.sevenheaven.segmentcontrol.SegmentControl
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/segment_control"
-            android:layout_width="160dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:textSize="32sp"
+            android:textSize="18sp"
             app:block_direction="horizon"
-            app:boundWidth="10dp"
-            app:cornerRadius="10dp"
+            app:boundWidth="2dp"
+            app:cornerRadius="14dp"
             app:horizonGap="10dp"
-            app:normalColor="@color/text_toolbar"
-            app:selectedColor="@color/blue"
-            app:separatorWidth="10dp"
-            app:texts="派送|到店"/>
+            app:normalColor="@color/colorPrimary"
+            app:selectedColor="@color/text_toolbar"
+            app:separatorWidth="2dp"
+            app:texts="派送|到店"
+            app:verticalGap="10dp"/>
+
     </LinearLayout>
 
 

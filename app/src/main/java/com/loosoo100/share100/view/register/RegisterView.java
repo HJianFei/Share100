@@ -5,7 +5,7 @@ import com.loosoo100.share100.view.base.BaseView;
 /**
  * 创建时间： 2016/9/3.
  * 作者：loosoo100
- * 功能描述：
+ * 功能描述：注册页面的接口
  */
 
 public interface RegisterView extends BaseView {

@@ -59,12 +59,14 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ShowEnterAnimation();
         }
+        //取消注册，退出页面
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 animateRevealClose();
             }
         });
+        //注册
         btn_reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,6 +178,9 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         animateRevealClose();
     }
 
+    /**
+     * 注册失败
+     */
     @Override
     public void failToRegister() {
         mDialog = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE);
@@ -185,12 +190,19 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
     }
 
+    /**
+     * 注册成功
+     */
+
     @Override
     public void successToRegister() {
         animateRevealClose();
 
     }
 
+    /**
+     * 显示加载对话框
+     */
     @Override
     public void showProgress() {
         mDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
@@ -199,6 +211,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
     }
 
+    /**
+     * 隐藏加载对话框
+     */
+
     @Override
     public void hideProgress() {
         if (null != mDialog) {
@@ -206,6 +222,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         }
 
     }
+
+    /**
+     * 页面销毁
+     */
 
     @Override
     protected void onDestroy() {

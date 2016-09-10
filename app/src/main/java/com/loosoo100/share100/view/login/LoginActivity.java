@@ -24,6 +24,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+/**
+ * description: 登录页面的界面实现
+ * author: HJianFei
+ * date: 2016/9/7 11:50
+ * update: 2016/9/7
+ */
 public class LoginActivity extends AppCompatActivity implements LoginView {
 
     @BindView(R.id.et_username)
@@ -82,6 +88,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         }
     }
 
+    /**
+     * 登陆失败
+     */
+
     @Override
     public void failToLogin() {
         mDialog.dismiss();
@@ -91,13 +101,19 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     }
 
+    /**
+     * 登录成功，跳转到主页面
+     */
     @Override
     public void navicateToHome() {
-
         Intent i2 = new Intent(this, MainActivity.class);
         startActivity(i2);
         this.finish();
     }
+
+    /**
+     * 显示加载对话框
+     */
 
     @Override
     public void showProgress() {
@@ -105,6 +121,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         mDialog.setTitleText("登录中...");
         mDialog.show();
     }
+
+    /**
+     * 隐藏加载对话框
+     */
 
     @Override
     public void hideProgress() {
@@ -114,6 +134,9 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     }
 
+    /**
+     * 页面销毁
+     */
     @Override
     protected void onDestroy() {
         mLoginPresenter.onDestroy();

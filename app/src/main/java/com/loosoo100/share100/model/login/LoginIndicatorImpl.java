@@ -5,7 +5,7 @@ import android.os.Handler;
 /**
  * 创建时间： 2016/9/3.
  * 作者：loosoo100
- * 功能描述：登录操作的逻辑处理
+ * 功能描述：登录操作的业务逻辑的实现
  */
 
 public class LoginIndicatorImpl implements LoginIndicator {

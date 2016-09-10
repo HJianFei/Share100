@@ -71,10 +71,17 @@ public class PersonDetailActivity extends AppCompatActivity implements BaseView 
         });
     }
 
+    /**
+     * 显示加载对话框
+     */
     @Override
     public void showProgress() {
 
     }
+
+    /**
+     * 隐藏加载对话框
+     */
 
     @Override
     public void hideProgress() {
@@ -147,6 +154,7 @@ public class PersonDetailActivity extends AppCompatActivity implements BaseView 
         dialog.findViewById(R.id.tack_photo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //调用系统相机拍照
                 choseHeadImageFromCameraCapture();
                 dialog.dismiss();
             }
@@ -160,6 +168,9 @@ public class PersonDetailActivity extends AppCompatActivity implements BaseView 
         dialog.show();
     }
 
+    /**
+     * 调用系统相机拍照获取图片
+     */
     private void choseHeadImageFromCameraCapture() {
         Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -173,6 +184,9 @@ public class PersonDetailActivity extends AppCompatActivity implements BaseView 
         startActivityForResult(intentFromCapture, CODE_CAMERA_REQUEST);
     }
 
+    /**
+     * 从系统图库中选择相片
+     */
     private void choseHeadImageFromGallery() {
         Intent intentFromGallery = new Intent();
         // 设置文件类型

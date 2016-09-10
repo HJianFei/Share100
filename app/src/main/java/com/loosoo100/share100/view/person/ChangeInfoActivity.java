@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.loosoo100.share100.R;
 
+import butterknife.BindView;
+
 /**
  * description: 更改个人信息
  * author: HJianFei
@@ -19,23 +21,33 @@ import com.loosoo100.share100.R;
  */
 public class ChangeInfoActivity extends AppCompatActivity {
 
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_info);
+        //初始化toolBar
+        initToolBar();
+    }
+
+    /**
+     * 初始化ToolBar
+     */
+    private void initToolBar() {
         String tag = getIntent().getExtras().getString("TAG");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (tag.equals("alter_name")) {
-            toolbar.setTitle(R.string.change_name);
+            mToolbar.setTitle(R.string.change_name);
 
         } else {
-            toolbar.setTitle(R.string.change_signal);
+            mToolbar.setTitle(R.string.change_signal);
         }
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();

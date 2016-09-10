@@ -15,6 +15,12 @@ import com.loosoo100.share100.view.person.PersonFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * description: 程序主页面
+ * author: HJianFei
+ * date: 2016/9/7 13:26
+ * update: 2016/9/7
+ */
 public class MainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 
     @BindView(R.id.bottom_navigation_bar)
@@ -25,23 +31,33 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        //初始化界面控件
         initNavi();
     }
 
+    /**
+     * 初始化界面控件
+     */
     private void initNavi() {
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
         bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.drawable.ic_home_white_24dp, R.string.navigation_home).setActiveColorResource(R.color.tab_background))
-                .addItem(new BottomNavigationItem(R.drawable.ic_book_white_24dp, R.string.navigation_order).setActiveColorResource(R.color.tab_background))
-                .addItem(new BottomNavigationItem(R.drawable.ic_music_note_white_24dp, R.string.navigation_msg).setActiveColorResource(R.color.tab_background))
-                .addItem(new BottomNavigationItem(R.drawable.ic_tv_white_24dp, R.string.navigation_person).setActiveColorResource(R.color.tab_background))
+                .addItem(new BottomNavigationItem(R.mipmap.home, R.string.navigation_home).setActiveColorResource(R.color.tab_background))
+                .addItem(new BottomNavigationItem(R.mipmap.order, R.string.navigation_order).setActiveColorResource(R.color.tab_background))
+                .addItem(new BottomNavigationItem(R.mipmap.news, R.string.navigation_msg).setActiveColorResource(R.color.tab_background))
+                .addItem(new BottomNavigationItem(R.mipmap.my, R.string.navigation_person).setActiveColorResource(R.color.tab_background))
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(this);
+        //默认选中首页
         setTabSelection(0);
     }
 
+    /**
+     * tab 切换
+     *
+     * @param i
+     */
     private void setTabSelection(int i) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();

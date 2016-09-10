@@ -7,7 +7,7 @@ import com.loosoo100.share100.view.login.LoginView;
 /**
  * 创建时间： 2016/9/3.
  * 作者：loosoo100
- * 功能描述：
+ * 功能描述：负责完成LoginActivity页面与LoginIndicatorImpl业务逻辑间的交互接口实现
  */
 
 public class LoginPresenterImpl implements LoginPresenter, LoginIndicator.OnLoginFinishListener {
