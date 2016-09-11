@@ -41,7 +41,7 @@ public class HomeRecommendViewPager extends PagerAdapter {
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                T.showShort(container.getContext(), "点击了item：" + position);
+                T.showShort(container.getContext(), "initHomeRecommend：" + position);
             }
         });
         container.addView(view);

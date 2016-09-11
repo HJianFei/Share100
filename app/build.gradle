@@ -46,4 +46,5 @@ dependencies {
     compile 'com.7heaven.widgets:segmentcontrol:1.16'
     compile 'com.jcodecraeer:xrecyclerview:1.2.7'
     compile 'com.zhy:magic-viewpager:1.0.1'
+    compile 'com.zhy:base-rvadapter:3.0.3'
 }

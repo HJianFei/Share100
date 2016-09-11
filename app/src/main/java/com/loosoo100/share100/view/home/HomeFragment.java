@@ -21,7 +21,6 @@ import com.loosoo100.share100.R;
 import com.loosoo100.share100.adapter.CommonAdapter;
 import com.loosoo100.share100.adapter.HomeRecommendViewPager;
 import com.loosoo100.share100.adapter.HomeViewPagerAdapter;
-import com.loosoo100.share100.adapter.ViewHolder;
 import com.loosoo100.share100.utils.T;
 import com.loosoo100.share100.view.base.BaseFragment;
 import com.zhy.magicviewpager.transformer.AlphaPageTransformer;
@@ -34,7 +33,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends BaseFragment implements HomeView {
+public class HomeFragment extends BaseFragment implements HomeView, View.OnClickListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -50,7 +49,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
     @BindView(R.id.rv_home_store)
     XRecyclerView mRecyclerView;
     private CommonAdapter<String> mAdapter;
-    private List<String> listData;
+    private List<String> listData = new ArrayList<>();
     private int refreshTime = 0;
     private int times = 0;
 
@@ -80,10 +79,6 @@ public class HomeFragment extends BaseFragment implements HomeView {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            listData = new ArrayList<String>();
-            for (int i = 0; i < 3; i++) {
-                listData.add("item" + i);
-            }
         }
     }
 
@@ -94,7 +89,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
         ButterKnife.bind(this, view);
         mAdapter = new CommonAdapter<String>(mContext, R.layout.home_recyclerview_item, listData) {
             @Override
-            public void setData(ViewHolder holder, String s) {
+            public void setData(com.loosoo100.share100.adapter.ViewHolder holder, String s) {
                 holder.setText(R.id.tv_home_item, s);
             }
         };
@@ -133,7 +128,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
                     public void run() {
 
                         listData.clear();
-                        for (int i = 0; i < 6; i++) {
+                        for (int i = 0; i < 3; i++) {
                             listData.add("item" + i + "after " + refreshTime + " times of refresh");
                         }
                         mAdapter.notifyDataSetChanged();
@@ -149,7 +144,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
                 if (times < 2) {
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
-                            for (int i = 0; i < 6; i++) {
+                            for (int i = 0; i < 3; i++) {
                                 listData.add("item" + (1 + listData.size()));
                             }
                             mRecyclerView.loadMoreComplete();
@@ -173,9 +168,20 @@ public class HomeFragment extends BaseFragment implements HomeView {
         });
         //设置适配器
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setRefreshing(true);
     }
 
     private void initHomeCategory(View header_category) {
+        header_category.findViewById(R.id.home_recommend_near_shopping).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_hotel).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_beauty).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_leisure).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_food).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_service_for_life).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_supermarket).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_could_shopping).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_store).setOnClickListener(this);
+        header_category.findViewById(R.id.home_recommend_more).setOnClickListener(this);
 
     }
 
@@ -204,7 +210,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
         mHomeViewpager.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                T.showShort(mContext, "点击了item：" + position);
+                T.showShort(mContext, "initHomeViewPager：" + position);
             }
         });
     }
@@ -221,6 +227,12 @@ public class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void initViewPager() {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        T.showShort(mContext, "initHomeRecommend" + v.getId());
 
     }
 }

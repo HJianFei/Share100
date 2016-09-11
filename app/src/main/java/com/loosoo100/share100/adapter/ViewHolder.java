@@ -67,7 +67,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setPosition(int position) {
-        this.mPosition = position;
+        this.mPosition = (position-1);
     }
 
     /**
