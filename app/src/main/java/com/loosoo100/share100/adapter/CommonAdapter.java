@@ -7,10 +7,6 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-/**
- * 作者：chs on 2016/4/29 11:33
- * 邮箱：657083984@qq.com
- */
 public abstract class CommonAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     private Context mContext;
     private int mLayoutId;

@@ -15,10 +15,4 @@
         android:text="消息"
         android:textColor="@color/text_toolbar"
         android:textSize="24sp"/>
-
-    <com.jcodecraeer.xrecyclerview.XRecyclerView
-        android:id="@+id/rv_message"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 </LinearLayout>

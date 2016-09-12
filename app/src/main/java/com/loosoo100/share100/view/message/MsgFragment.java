@@ -4,7 +4,6 @@ package com.loosoo100.share100.view.message;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import com.loosoo100.share100.R;
 import com.loosoo100.share100.presenter.message.MsgPresenter;
 import com.loosoo100.share100.presenter.message.MsgPresenterImpl;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -32,8 +30,6 @@ public class MsgFragment extends Fragment implements MsgView {
     private String mParam1;
     private String mParam2;
     private Context mContext;
-    @BindView(R.id.rv_message)
-    RecyclerView mRecyclerView;
     private SweetAlertDialog mDialog;
     private MsgPresenter mMsgPresenter;
 

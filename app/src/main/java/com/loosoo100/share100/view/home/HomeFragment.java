@@ -3,9 +3,9 @@ package com.loosoo100.share100.view.home;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +13,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jcodecraeer.xrecyclerview.ProgressStyle;
-import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.github.jdsjlzx.recyclerview.LRecyclerView;
+import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
+import com.github.jdsjlzx.recyclerview.ProgressStyle;
+import com.github.jdsjlzx.util.RecyclerViewStateUtils;
+import com.github.jdsjlzx.util.RecyclerViewUtils;
+import com.github.jdsjlzx.view.LoadingFooter;
 import com.jude.rollviewpager.OnItemClickListener;
 import com.jude.rollviewpager.RollPagerView;
 import com.loosoo100.share100.R;
 import com.loosoo100.share100.adapter.CommonAdapter;
 import com.loosoo100.share100.adapter.HomeRecommendViewPager;
 import com.loosoo100.share100.adapter.HomeViewPagerAdapter;
+import com.loosoo100.share100.adapter.ViewHolder;
 import com.loosoo100.share100.utils.T;
 import com.loosoo100.share100.view.base.BaseFragment;
 import com.zhy.magicviewpager.transformer.AlphaPageTransformer;
@@ -32,6 +37,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 public class HomeFragment extends BaseFragment implements HomeView, View.OnClickListener {
 
@@ -46,12 +53,11 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
     ImageView mSearchSeller;
     private String mParam1;
     private String mParam2;
-    @BindView(R.id.rv_home_store)
-    XRecyclerView mRecyclerView;
+    @BindView(R.id.home_recyclerView)
+    LRecyclerView mRecyclerView;
     private CommonAdapter<String> mAdapter;
-    private List<String> listData = new ArrayList<>();
-    private int refreshTime = 0;
-    private int times = 0;
+    private List<String> listDatas = new ArrayList<>();
+    private LRecyclerViewAdapter mLRecyclerViewAdapter = null;
 
 
     public HomeFragment() {
@@ -87,88 +93,87 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
-        mAdapter = new CommonAdapter<String>(mContext, R.layout.home_recyclerview_item, listData) {
+        for (int i = 0; i < 10; i++) {
+            listDatas.add("item" + i);
+
+        }
+        mAdapter = new CommonAdapter<String>(mContext, R.layout.home_recyclerview_item, listDatas) {
             @Override
-            public void setData(com.loosoo100.share100.adapter.ViewHolder holder, String s) {
+            public void setData(ViewHolder holder, String s) {
                 holder.setText(R.id.tv_home_item, s);
             }
         };
-        initRecyclerView();
+        initRecyclerView(view);
         return view;
     }
 
-    private void initRecyclerView() {
+    private void initRecyclerView(View view) {
+        mLRecyclerViewAdapter = new LRecyclerViewAdapter(mContext, mAdapter);
+        mRecyclerView.setAdapter(mLRecyclerViewAdapter);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+
         mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
-        mRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
+        mRecyclerView.setArrowImageView(R.drawable.ic_pulltorefresh_arrow);
         //主页的ViewPager广播轮播条
-        View header_viewpager = View.inflate(mContext, R.layout.home_head_view_viewpager, null);
+        View header_viewpager = LayoutInflater.from(mContext).inflate(R.layout.home_head_view_viewpager, (ViewGroup) view.findViewById(android.R.id.content), false);
         RollPagerView mHomeViewpager = (RollPagerView) header_viewpager.findViewById(R.id.home_view_pager);
         initHomeViewPager(mHomeViewpager);
-        mRecyclerView.addHeaderView(header_viewpager);
         //主页的商品分类
-        View header_category = View.inflate(mContext, R.layout.home_head_view_category, null);
+        View header_category = LayoutInflater.from(mContext).inflate(R.layout.home_head_view_category, (ViewGroup) view.findViewById(android.R.id.content), false);
         initHomeCategory(header_category);
-        mRecyclerView.addHeaderView(header_category);
         //主页的推荐商家
-        View header_recommend = View.inflate(mContext, R.layout.home_head_view_recommend, null);
+        View header_recommend = LayoutInflater.from(mContext).inflate(R.layout.home_head_view_recommend, (ViewGroup) view.findViewById(android.R.id.content), false);
         ViewPager mHomeRecommendViewPager = (ViewPager) header_recommend.findViewById(R.id.vp_viewpager_recommend);
         initHomeRecommend(mHomeRecommendViewPager);
-        mRecyclerView.addHeaderView(header_recommend);
-        //设置页面下拉刷新，下拉加载更多的监听器
-        mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
 
-            //下拉刷新
+        RecyclerViewUtils.setHeaderView(mRecyclerView, header_viewpager);
+        RecyclerViewUtils.setHeaderView(mRecyclerView, header_category);
+        RecyclerViewUtils.setHeaderView(mRecyclerView, header_recommend);
+
+        mRecyclerView.setLScrollListener(new LRecyclerView.LScrollListener() {
             @Override
             public void onRefresh() {
-                refreshTime++;
-                times = 0;
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-
-                        listData.clear();
-                        for (int i = 0; i < 3; i++) {
-                            listData.add("item" + i + "after " + refreshTime + " times of refresh");
-                        }
-                        mAdapter.notifyDataSetChanged();
-                        mRecyclerView.refreshComplete();
-                    }
-
-                }, 1000);            //refresh data here
+                RecyclerViewStateUtils.setFooterViewState(mRecyclerView, LoadingFooter.State.Normal);
             }
 
-            //上拉加载更多
             @Override
-            public void onLoadMore() {
-                if (times < 2) {
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            for (int i = 0; i < 3; i++) {
-                                listData.add("item" + (1 + listData.size()));
-                            }
-                            mRecyclerView.loadMoreComplete();
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }, 1000);
-                } else {
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            for (int i = 0; i < 9; i++) {
-                                listData.add("item" + (1 + listData.size()));
-                            }
-                            mRecyclerView.noMoreLoading();
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }, 1000);
+            public void onScrollUp() {
+            }
+
+            @Override
+            public void onScrollDown() {
+            }
+
+            @Override
+            public void onBottom() {
+                LoadingFooter.State state = RecyclerViewStateUtils.getFooterViewState(mRecyclerView);
+                if (state == LoadingFooter.State.Loading) {
+                    Log.d(TAG, "the state is Loading, just wait..");
+                    return;
                 }
-                times++;
+            }
+
+            @Override
+            public void onScrolled(int distanceX, int distanceY) {
+            }
+
+        });
+        mLRecyclerViewAdapter.setOnItemClickListener(new com.github.jdsjlzx.interfaces.OnItemClickListener() {
+
+
+            @Override
+            public void onItemClick(View view, int i) {
+                T.showShort(mContext, "点击了item:" + i);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int i) {
 
             }
         });
-        //设置适配器
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setRefreshing(true);
+
+//        mRecyclerView.setRefreshing(true);
     }
 
     private void initHomeCategory(View header_category) {
