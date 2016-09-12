@@ -13,10 +13,10 @@ public interface BaseView {
     //隐藏进度条
     void hideProgress();
 
-//    //显示加载错误
-//    void showError(String msg, View.OnClickListener onClickListener);
-//
-//    //显示数据为空
-//    void showEmpty(String msg, View.OnClickListener onClickListener);
+    //显示加载错误
+    void showError();
+
+    //显示数据为空
+    void showEmpty();
 
 }

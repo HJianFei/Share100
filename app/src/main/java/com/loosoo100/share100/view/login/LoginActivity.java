@@ -134,6 +134,16 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     }
 
+    @Override
+    public void showError() {
+
+    }
+
+    @Override
+    public void showEmpty() {
+
+    }
+
     /**
      * 页面销毁
      */

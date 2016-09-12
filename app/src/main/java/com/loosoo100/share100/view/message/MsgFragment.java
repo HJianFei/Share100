@@ -93,6 +93,16 @@ public class MsgFragment extends Fragment implements MsgView {
         }
     }
 
+    @Override
+    public void showError() {
+
+    }
+
+    @Override
+    public void showEmpty() {
+
+    }
+
     /**
      * 页面第一次可见时数据的加载填充
      */

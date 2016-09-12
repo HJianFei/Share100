@@ -223,6 +223,16 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
     }
 
+    @Override
+    public void showError() {
+
+    }
+
+    @Override
+    public void showEmpty() {
+
+    }
+
     /**
      * 页面销毁
      */

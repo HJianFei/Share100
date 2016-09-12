@@ -88,6 +88,16 @@ public class PersonDetailActivity extends AppCompatActivity implements BaseView 
 
     }
 
+    @Override
+    public void showError() {
+
+    }
+
+    @Override
+    public void showEmpty() {
+
+    }
+
     @OnClick({R.id.head_photo, R.id.alter_name, R.id.alter_sex, R.id.alter_qrcode, R.id.alter_signal})
     public void onClick(View view) {
         Intent intent;

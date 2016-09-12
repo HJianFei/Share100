@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,8 @@ import com.loosoo100.share100.adapter.CommonAdapter;
 import com.loosoo100.share100.adapter.HomeRecommendViewPager;
 import com.loosoo100.share100.adapter.HomeViewPagerAdapter;
 import com.loosoo100.share100.adapter.ViewHolder;
+import com.loosoo100.share100.presenter.home.HomePresenter;
+import com.loosoo100.share100.presenter.home.HomePresenterImpl;
 import com.loosoo100.share100.utils.T;
 import com.loosoo100.share100.view.base.BaseFragment;
 import com.zhy.magicviewpager.transformer.AlphaPageTransformer;
@@ -37,8 +38,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class HomeFragment extends BaseFragment implements HomeView, View.OnClickListener {
 
@@ -58,7 +58,11 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
     private CommonAdapter<String> mAdapter;
     private List<String> listDatas = new ArrayList<>();
     private LRecyclerViewAdapter mLRecyclerViewAdapter = null;
-
+    //对话框
+    private SweetAlertDialog mDialog;
+    private HomePresenter mHomePresenter;
+    private RollPagerView mHomeViewpager;
+    private ViewPager mHomeRecommendViewPager;
 
     public HomeFragment() {
     }
@@ -93,40 +97,38 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
-        for (int i = 0; i < 10; i++) {
-            listDatas.add("item" + i);
+        for (int i = 0; i < 5; i++) {
+            listDatas.add("item:" + i);
 
         }
+        mHomePresenter = new HomePresenterImpl(this);
+        mHomePresenter.firstInitHomeView();
+        initRecyclerView(view);
+        return view;
+    }
+
+    private void initRecyclerView(View view) {
+
         mAdapter = new CommonAdapter<String>(mContext, R.layout.home_recyclerview_item, listDatas) {
             @Override
             public void setData(ViewHolder holder, String s) {
                 holder.setText(R.id.tv_home_item, s);
             }
         };
-        initRecyclerView(view);
-        return view;
-    }
-
-    private void initRecyclerView(View view) {
         mLRecyclerViewAdapter = new LRecyclerViewAdapter(mContext, mAdapter);
         mRecyclerView.setAdapter(mLRecyclerViewAdapter);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-
         mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mRecyclerView.setArrowImageView(R.drawable.ic_pulltorefresh_arrow);
         //主页的ViewPager广播轮播条
         View header_viewpager = LayoutInflater.from(mContext).inflate(R.layout.home_head_view_viewpager, (ViewGroup) view.findViewById(android.R.id.content), false);
-        RollPagerView mHomeViewpager = (RollPagerView) header_viewpager.findViewById(R.id.home_view_pager);
-        initHomeViewPager(mHomeViewpager);
+        mHomeViewpager = (RollPagerView) header_viewpager.findViewById(R.id.home_view_pager);
         //主页的商品分类
         View header_category = LayoutInflater.from(mContext).inflate(R.layout.home_head_view_category, (ViewGroup) view.findViewById(android.R.id.content), false);
         initHomeCategory(header_category);
         //主页的推荐商家
         View header_recommend = LayoutInflater.from(mContext).inflate(R.layout.home_head_view_recommend, (ViewGroup) view.findViewById(android.R.id.content), false);
-        ViewPager mHomeRecommendViewPager = (ViewPager) header_recommend.findViewById(R.id.vp_viewpager_recommend);
-        initHomeRecommend(mHomeRecommendViewPager);
-
+        mHomeRecommendViewPager = (ViewPager) header_recommend.findViewById(R.id.vp_viewpager_recommend);
         RecyclerViewUtils.setHeaderView(mRecyclerView, header_viewpager);
         RecyclerViewUtils.setHeaderView(mRecyclerView, header_category);
         RecyclerViewUtils.setHeaderView(mRecyclerView, header_recommend);
@@ -135,6 +137,7 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
             @Override
             public void onRefresh() {
                 RecyclerViewStateUtils.setFooterViewState(mRecyclerView, LoadingFooter.State.Normal);
+                mHomePresenter.refreshHomeView();
             }
 
             @Override
@@ -147,11 +150,9 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
 
             @Override
             public void onBottom() {
-                LoadingFooter.State state = RecyclerViewStateUtils.getFooterViewState(mRecyclerView);
-                if (state == LoadingFooter.State.Loading) {
-                    Log.d(TAG, "the state is Loading, just wait..");
-                    return;
-                }
+                // loading more
+                RecyclerViewStateUtils.setFooterViewState(getActivity(), mRecyclerView, 5, LoadingFooter.State.Loading, null);
+                mHomePresenter.loadMoreHomeView();
             }
 
             @Override
@@ -172,8 +173,6 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
 
             }
         });
-
-//        mRecyclerView.setRefreshing(true);
     }
 
     private void initHomeCategory(View header_category) {
@@ -190,26 +189,84 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
 
     }
 
-    /**
-     * 商家推荐
-     *
-     * @param mHomeRecommendViewPager
-     */
-    private void initHomeRecommend(ViewPager mHomeRecommendViewPager) {
-        mHomeRecommendViewPager.setPageMargin(50);
-        mHomeRecommendViewPager.setOffscreenPageLimit(5);
-        mHomeRecommendViewPager.setAdapter(new HomeRecommendViewPager());
-        mHomeRecommendViewPager.setPageTransformer(true, new RotateDownPageTransformer(new AlphaPageTransformer(new ScaleInTransformer())));
+    @Override
+    public void showProgress() {
+        mDialog = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE);
+        mDialog.setTitleText("数据加载中");
+        mDialog.show();
+
 
     }
 
-    /**
-     * Home 页面的广播轮播条
-     *
-     * @param mHomeViewpager
-     */
+    @Override
+    public void hideProgress() {
+        if (null != mDialog) {
+            mDialog.dismiss();
+        }
+        mRecyclerView.refreshComplete();
+        mAdapter.notifyDataSetChanged();
 
-    private void initHomeViewPager(RollPagerView mHomeViewpager) {
+    }
+
+    @Override
+    public void showError() {
+        mRecyclerView.refreshComplete();
+        mAdapter.notifyDataSetChanged();
+        mDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE);
+        mDialog.setTitleText("数据加载失败");
+        mDialog.show();
+
+    }
+
+    @Override
+    public void showEmpty() {
+        mRecyclerView.refreshComplete();
+        mAdapter.notifyDataSetChanged();
+        mDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE);
+        mDialog.setTitleText("没有数据");
+        mDialog.show();
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.home_recommend_near_shopping:
+                T.showShort(mContext, "附近购物");
+                break;
+            case R.id.home_recommend_hotel:
+                T.showShort(mContext, "酒店");
+                break;
+            case R.id.home_recommend_beauty:
+                T.showShort(mContext, "丽人");
+                break;
+            case R.id.home_recommend_leisure:
+                T.showShort(mContext, "休闲娱乐");
+                break;
+            case R.id.home_recommend_food:
+                T.showShort(mContext, "美食");
+                break;
+            case R.id.home_recommend_service_for_life:
+                T.showShort(mContext, "生活服务");
+                break;
+            case R.id.home_recommend_supermarket:
+                T.showShort(mContext, "分享超市");
+                break;
+            case R.id.home_recommend_could_shopping:
+                T.showShort(mContext, "分享云购");
+                break;
+            case R.id.home_recommend_store:
+                T.showShort(mContext, "分享便利店");
+                break;
+            case R.id.home_recommend_more:
+                T.showShort(mContext, "更多");
+                break;
+        }
+
+    }
+
+    @Override
+    public void initHomeViewPager() {
         mHomeViewpager.setPlayDelay(3000);
         mHomeViewpager.setAdapter(new HomeViewPagerAdapter());
         mHomeViewpager.setOnItemClickListener(new OnItemClickListener() {
@@ -221,23 +278,25 @@ public class HomeFragment extends BaseFragment implements HomeView, View.OnClick
     }
 
     @Override
-    public void showProgress() {
+    public void initHomeRecommend() {
+        mHomeRecommendViewPager.setPageMargin(50);
+        mHomeRecommendViewPager.setOffscreenPageLimit(5);
+        mHomeRecommendViewPager.setAdapter(new HomeRecommendViewPager());
+        mHomeRecommendViewPager.setPageTransformer(true, new RotateDownPageTransformer(new AlphaPageTransformer(new ScaleInTransformer())));
 
     }
 
     @Override
-    public void hideProgress() {
+    public void initHomeRecyclerView(List<String> object) {
+        listDatas.addAll(object);
+        mRecyclerView.refreshComplete();
+        mAdapter.notifyDataSetChanged();
 
     }
 
     @Override
-    public void initViewPager() {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        T.showShort(mContext, "initHomeRecommend" + v.getId());
-
+    public void onDestroy() {
+        mHomePresenter.onHomeViewDestroy();
+        super.onDestroy();
     }
 }
